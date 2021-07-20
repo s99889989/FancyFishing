@@ -3,7 +3,7 @@ version: ${version}
 main: com.daxton.fancyfishing.FancyFishing
 api-version: 1.17
 prefix: FancyFishing
-softdepend: []
+softdepend: [FancyCore, FancyItems]
 authors: [ s99889989 ]
 description: AFK Fishing
 commands:
