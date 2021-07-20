@@ -1,4 +1,4 @@
-package com.daxton.fancyfishing.api;
+package com.daxton.fancyfishing.fishing.menu;
 
 import com.daxton.fancyfishing.FancyFishing;
 import com.daxton.fancyfishing.manager.Manager;
