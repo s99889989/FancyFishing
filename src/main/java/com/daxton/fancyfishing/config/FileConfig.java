@@ -19,4 +19,9 @@ public class FileConfig {
         //讀取設定檔
         config_Map = ConfigLoad.execute(FancyFishing.fancyFishing);
     }
+    //重新讀取設定檔
+    public static void reload(){
+        config_Map = ConfigLoad.execute(FancyFishing.fancyFishing);
+    }
+
 }

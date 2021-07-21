@@ -1,0 +1,14 @@
+#釣到物品的機率(滿機率為100)
+FishingTime: 80
+#釣魚包包是否可以堆疊(如果設定為false就算相同物品也是佔一個格子)
+BagsStacking: false
+#一次可以獲得多個選項物品
+ItemGetMultiple: false
+#物品列表(機率為下方物品加總，數字越高機率越高)
+#如果ItemGetMultiple設定為true，每個物品獲得機率會分開算(滿機率為100)
+#從左至右分別為物品、機率、數量
+ItemList:
+- 'Fish.0 5 2-10'
+- 'APPLE 8'
+- 'Stone 8'
+- 'Allium 8'

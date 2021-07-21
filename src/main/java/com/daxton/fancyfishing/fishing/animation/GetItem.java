@@ -1,17 +1,15 @@
-package com.daxton.fancyfishing.fishing.real;
+package com.daxton.fancyfishing.fishing.animation;
 
-import com.daxton.fancycore.api.task.location.GuiseEntity;
+import com.daxton.fancycore.api.task.GuiseEntity;
 import com.daxton.fancyfishing.FancyFishing;
-import com.daxton.fancyfishing.manager.Manager;
 import org.bukkit.Location;
-import org.bukkit.Material;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.Random;
 import java.util.function.Function;
 
-public class OrbitalActionOut extends BukkitRunnable {
+public class GetItem extends BukkitRunnable {
 
     private Location sourceLocation;
     private Location targetLocation;
@@ -24,17 +22,15 @@ public class OrbitalActionOut extends BukkitRunnable {
     private Function<Location,Location> fLocation;
     private String uuidString;
 
-    public OrbitalActionOut(String uuidString, GuiseEntity guiseEntity, Location sourceLocation, Location targetLocation){
+    public GetItem(String uuidString, GuiseEntity guiseEntity, Location sourceLocation, Location targetLocation){
         this.guiseEntity = guiseEntity;
         this.sourceLocation = sourceLocation;
         this.targetLocation = targetLocation;
         this.fLocation = (floc) -> floc;
         this.uuidString = uuidString;
-        vec = getDirection2(sourceLocation, true, true, false, 60, 0, 1);
+        vec = getDirection2(sourceLocation, true, true, false, 60, 180, 1);
         runTaskTimer(FancyFishing.fancyFishing, 0L, period);
     }
-
-
 
     public void run(){
         j += period;
@@ -42,12 +38,6 @@ public class OrbitalActionOut extends BukkitRunnable {
             double c = Math.min(1.0D, (double) j / speed);
             Location location = fLocation.apply(sourceLocation.add(targetLocation.clone().subtract(sourceLocation).toVector().normalize().multiply(c).add(vec.multiply(1.0D - c))));
             guiseEntity.teleport(location);
-            if(location.getBlock().getType() == Material.WATER){
-                cancel();
-                Manager.fishing_Action_Map.get(uuidString).execute(FishingStatus.WATER);
-                Manager.fishing_Action_Map.get(uuidString).buoy = location;
-            }
-
         }
 
         if(j > duration || sourceLocation.distanceSquared(targetLocation) < 0.8D){
@@ -56,7 +46,15 @@ public class OrbitalActionOut extends BukkitRunnable {
         }
     }
 
-
+    public void onWater(){
+        BukkitRunnable bukkitRunnable = new BukkitRunnable() {
+            @Override
+            public void run() {
+                guiseEntity.delete();
+            }
+        };
+        bukkitRunnable.runTaskLater(FancyFishing.fancyFishing, 60);
+    }
 
     //偏轉
     public static Vector getDirection2(Location dirLocation, boolean pt, boolean yw, boolean sign, double hight, double angle, double distance){

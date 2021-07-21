@@ -1,0 +1,40 @@
+#釣魚時長
+FishingTime:
+  short: 10
+  long: 60
+#甩竿時間
+FishingRodTime:
+  short: 1
+  long: 2
+#自動釣魚倒數時間
+AutoFishingDelay:
+  short: 1
+  long: 9
+
+#甩竿時
+Throw-FishingRod-Start:
+  Action:
+    - Sound[sound=heartbeatin;pitch=1;volume=1;category=PLAYERS] @LocSelf{LA=0|1|0}
+
+#甩竿後
+Throw-FishingRod-End:
+  Action: []
+
+#浮標落水
+Buoy-Water:
+  Action:
+    - Sound[sound=getamped_fishing_dropwater;pitch=1;volume=1;category=PLAYERS] @LocSelf{LA=0|1|0}
+
+#浮標未落水
+Buoy-Other:
+  Action:  []
+
+#釣到物品
+Caught-Item:
+  Action:
+    - Sound[sound=getamped_fishing_get_item;pitch=1;volume=1;category=PLAYERS] @LocSelf{LA=0|1|0}
+
+#沒有釣到物品
+Caught-No-Item:
+  Action:
+    - Sound[sound=getamped_fishing_no_item;pitch=1;volume=1;category=PLAYERS] @LocSelf{LA=0|1|0}

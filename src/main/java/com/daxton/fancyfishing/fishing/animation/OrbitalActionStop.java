@@ -1,6 +1,6 @@
-package com.daxton.fancyfishing.fishing.real;
+package com.daxton.fancyfishing.fishing.animation;
 
-import com.daxton.fancycore.api.task.location.GuiseEntity;
+import com.daxton.fancycore.api.task.GuiseEntity;
 import com.daxton.fancyfishing.FancyFishing;
 import com.daxton.fancyfishing.manager.Manager;
 import org.bukkit.Location;

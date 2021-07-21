@@ -1,7 +1,9 @@
-package com.daxton.fancyfishing.fishing.real;
+package com.daxton.fancyfishing.fishing.animation;
 
-import com.daxton.fancycore.api.task.location.GuiseEntity;
+import com.daxton.fancycore.api.task.GuiseEntity;
 import com.daxton.fancyfishing.FancyFishing;
+import com.daxton.fancyfishing.fishing.FishingStatus;
+import com.daxton.fancyfishing.fishing.action.FishingMain;
 import com.daxton.fancyfishing.manager.Manager;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -10,7 +12,7 @@ import org.bukkit.util.Vector;
 import java.util.Random;
 import java.util.function.Function;
 
-public class GetItem extends BukkitRunnable {
+public class OrbitalActionIn extends BukkitRunnable {
 
     private Location sourceLocation;
     private Location targetLocation;
@@ -23,7 +25,7 @@ public class GetItem extends BukkitRunnable {
     private Function<Location,Location> fLocation;
     private String uuidString;
 
-    public GetItem(String uuidString, GuiseEntity guiseEntity, Location sourceLocation, Location targetLocation){
+    public OrbitalActionIn(String uuidString,GuiseEntity guiseEntity, Location sourceLocation, Location targetLocation){
         this.guiseEntity = guiseEntity;
         this.sourceLocation = sourceLocation;
         this.targetLocation = targetLocation;
@@ -44,6 +46,9 @@ public class GetItem extends BukkitRunnable {
         if(j > duration || sourceLocation.distanceSquared(targetLocation) < 0.8D){
             cancel();
             guiseEntity.delete();
+            Manager.guise_Entity_Map.remove(uuidString);
+            FishingMain fishingMain = Manager.fishing_Main_Map.get(uuidString);
+            fishingMain.execute(FishingStatus.PLAYER);
         }
     }
 
