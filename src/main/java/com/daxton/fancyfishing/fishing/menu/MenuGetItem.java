@@ -1,23 +1,29 @@
 package com.daxton.fancyfishing.fishing.menu;
 
 import com.daxton.fancycore.api.gui.GUI;
-import com.daxton.fancycore.api.gui.GuiCloseAction;
+import com.daxton.fancycore.api.gui.GuiAction;
 import org.bukkit.entity.Player;
+import org.bukkit.event.inventory.ClickType;
+import org.bukkit.inventory.ItemStack;
 
-public class FishingClose implements GuiCloseAction {
+public class MenuGetItem implements GuiAction {
 
     private final GUI gui;
     private final Player player;
     private final String uuidString;
 
-    public FishingClose(GUI gui, Player player){
+    public MenuGetItem(GUI gui, Player player){
         this.gui = gui;
         this.player = player;
         this.uuidString = player.getUniqueId().toString();
     }
 
-    public void execute(){
+    public void execute(ClickType clickType, int slot){
+        if(clickType == ClickType.LEFT){
 
+        }
     }
+
+
 
 }

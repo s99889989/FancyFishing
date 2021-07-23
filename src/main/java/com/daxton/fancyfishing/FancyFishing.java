@@ -3,8 +3,10 @@ package com.daxton.fancyfishing;
 import com.daxton.fancyfishing.command.MainCommand;
 import com.daxton.fancyfishing.command.TabCommand;
 import com.daxton.fancyfishing.config.FileConfig;
+import com.daxton.fancyfishing.fishing.animation.BuoyFloating;
 import com.daxton.fancyfishing.listener.PlayerListener;
 
+import com.daxton.fancyfishing.taxk.Reload;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -30,7 +32,10 @@ public final class FancyFishing extends JavaPlugin {
         Objects.requireNonNull(Bukkit.getPluginCommand("fancyfishing")).setTabCompleter(new TabCommand());
         //監聽
         Bukkit.getPluginManager().registerEvents(new PlayerListener(), fancyFishing);
-
+        //浮標上下浮動
+        new BuoyFloating();
+        //重新讀取用程序
+        Reload.execute();
     }
 
     @Override

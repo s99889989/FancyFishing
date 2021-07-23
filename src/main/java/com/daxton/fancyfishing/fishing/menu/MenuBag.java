@@ -8,22 +8,21 @@ import org.bukkit.inventory.ItemStack;
 import com.daxton.fancycore.api.gui.GuiAction;
 import com.daxton.fancycore.api.gui.GUI;
 
-import java.util.List;
 
-public class FishingBag implements GuiAction{
+public class MenuBag implements GuiAction{
 
     private final GUI gui;
     private final Player player;
     private final String uuidString;
     private boolean state = false;
 
-    public FishingBag(GUI gui, Player player){
+    public MenuBag(GUI gui, Player player){
         this.gui = gui;
         this.player = player;
         this.uuidString = player.getUniqueId().toString();
     }
 
-    public void execute(ClickType clickType){
+    public void execute(ClickType clickType, int slot){
         if(clickType == ClickType.LEFT){
             if(state){
                 close();
@@ -44,10 +43,12 @@ public class FishingBag implements GuiAction{
 
     //刷新背包
     public void refreshBag(){
-        List<ItemStack> itemStacks = Manager.player_item.get(uuidString);
+        ItemStack[] itemStacks = Manager.player_item.get(uuidString);
         int i = 10;
         for(ItemStack itemStack : itemStacks){
-            gui.addItem(itemStack, false, i);
+            if(itemStack != null){
+                gui.setItem(itemStack, false, i);
+            }
             i++;
         }
     }

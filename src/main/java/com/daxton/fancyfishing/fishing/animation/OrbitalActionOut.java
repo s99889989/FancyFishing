@@ -45,16 +45,21 @@ public class OrbitalActionOut extends BukkitRunnable {
             Location location = fLocation.apply(sourceLocation.add(targetLocation.clone().subtract(sourceLocation).toVector().normalize().multiply(c).add(vec.multiply(1.0D - c))));
             guiseEntity.teleport(location);
             if(location.getBlock().getType() == Material.WATER){
+                Location location1 = location.clone().add(0,-0.2,0);
+                guiseEntity.teleport(location1);
                 cancel();
                 FishingMain fishingMain = Manager.fishing_Main_Map.get(uuidString);
                 fishingMain.execute(FishingStatus.WATER);
-                fishingMain.buoy = location;
+                fishingMain.buoy = location1;
+                fishingMain.isBuoyFlight = false;
             }
 
         }
 
         if(j > duration || sourceLocation.distanceSquared(targetLocation) < 0.8D){
             cancel();
+            FishingMain fishingMain = Manager.fishing_Main_Map.get(uuidString);
+            fishingMain.isBuoyFlight = false;
             guiseEntity.delete();
             Manager.guise_Entity_Map.remove(uuidString);
         }

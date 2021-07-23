@@ -1,6 +1,7 @@
 package com.daxton.fancyfishing.fishing.action;
 
 import com.daxton.fancycore.api.aims.location.one.Look;
+import com.daxton.fancycore.api.gui.GUI;
 import com.daxton.fancycore.api.item.ItemKeySearch;
 import com.daxton.fancycore.api.task.GuiseEntity;
 import com.daxton.fancycore.api.taskaction.StringToMap;
@@ -19,8 +20,10 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 public class FishingMain {
 
@@ -30,6 +33,7 @@ public class FishingMain {
     public Location buoy;
     public Location locationPlayer;
     public boolean isFishing = false;
+    public boolean isBuoyFlight = false;
     public ItemStack fishHook;
 
     public FishingMain(Player player){
@@ -55,17 +59,21 @@ public class FishingMain {
 
     //甩竿動作
     public void executeFirst(){
-        if(checkBagFull())
-        FishingThrow.execute(player);
+        if(!isBuoyFlight && checkBagFull() && itemCheck(player.getInventory().getItemInMainHand())){
+            isBuoyFlight = true;
+            FishingThrow.execute(player);
+        }
+
     }
     //倒數準備開始甩竿
     public void readyStart(){
-        if(checkBagFull())
-        FishingCount.execute(player);
+        if(checkBagFull()){
+            FishingCount.execute(player);
+        }
     }
     //檢查是否掉到東西
     public void catchItem(){
-        FishBait.execute(player);
+        FishGetItem.execute(player);
     }
     //執行
     public void execute(FishingStatus fishingStatus){
@@ -78,18 +86,32 @@ public class FishingMain {
     }
     //停止釣魚
     public void stop(){
-        if(isFishing){
+        if(!isBuoyFlight && isFishing){
             bukkitRunnable.cancel();
+            isFishing = false;
             runAction("Fishing-Stop", player);
             if(Manager.guise_Entity_Map.get(uuidString) != null){
                 GuiseEntity guiseEntity = Manager.guise_Entity_Map.get(uuidString);
                 new OrbitalActionStop(uuidString, guiseEntity, guiseEntity.getLocation(), Look.getLook(player, 2));
             }
-            isFishing = false;
+
         }
     }
 
-
+    //刷新背包
+    public void refreshBag(){
+        ItemStack[] itemStacks = Manager.player_item.get(uuidString);
+        if(GUI.gui_Map.get(uuidString) != null){
+            GUI gui = GUI.gui_Map.get(uuidString);
+            int i = 10;
+            for(ItemStack itemStack : itemStacks){
+                if(itemStack != null){
+                    gui.setItem(itemStack, false, i);
+                }
+                i++;
+            }
+        }
+    }
 
     //執行動作
     public void runAction(String actionKey, LivingEntity self){
@@ -105,21 +127,24 @@ public class FishingMain {
 
     //確認背包是否滿了，滿了就回傳false
     public boolean checkBagFull(){
-        List<ItemStack> itemStacks = Manager.player_item.get(uuidString);
-        int bagSize = Manager.player_bag_size.get(uuidString);
-        if(itemStacks.size() >= bagSize){
+        ItemStack[] itemStacks = Manager.player_item.get(uuidString);
+        boolean b = Arrays.stream(itemStacks).anyMatch(Objects::isNull);
+        if(!b){
             runAction("Bag-Full", player);
         }
-        return itemStacks.size() < bagSize;
+        FancyFishing.fancyFishing.getLogger().info(b+" : ");
+        return b;
     }
 
     //檢查手上物品是否是釣竿
     public static boolean itemCheck(ItemStack itemStack){
         boolean output = false;
-        String toolType = ItemKeySearch.getCustomAttributes(itemStack,"tooltype");
-        //FancyFishing.fancyFishing.getLogger().info(toolType);
-        if(toolType.equals("釣竿")){
-            output = true;
+        if(itemStack.getType() != Material.AIR){
+            String toolType = ItemKeySearch.getCustomAttributes(itemStack,"tooltype");
+            //FancyFishing.fancyFishing.getLogger().info(toolType);
+            if(toolType.equals("釣竿")){
+                output = true;
+            }
         }
         return output;
     }

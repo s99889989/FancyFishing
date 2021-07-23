@@ -2,6 +2,7 @@ package com.daxton.fancyfishing.fishing.animation;
 
 import com.daxton.fancycore.api.task.GuiseEntity;
 import com.daxton.fancyfishing.FancyFishing;
+import com.daxton.fancyfishing.fishing.action.FishingMain;
 import com.daxton.fancyfishing.manager.Manager;
 import org.bukkit.Location;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -43,6 +44,8 @@ public class OrbitalActionStop extends BukkitRunnable {
 
         if(j > duration || sourceLocation.distanceSquared(targetLocation) < 0.8D){
             cancel();
+            FishingMain fishingMain = Manager.fishing_Main_Map.get(uuidString);
+            fishingMain.isBuoyFlight = false;
             guiseEntity.delete();
             Manager.guise_Entity_Map.remove(uuidString);
         }

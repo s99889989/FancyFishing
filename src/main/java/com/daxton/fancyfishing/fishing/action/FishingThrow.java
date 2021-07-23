@@ -7,6 +7,7 @@ import com.daxton.fancyfishing.fishing.animation.OrbitalActionOut;
 import com.daxton.fancyfishing.manager.Manager;
 import com.daxton.fancyitmes.item.CustomItem;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 
 public class FishingThrow {
@@ -23,7 +24,11 @@ public class FishingThrow {
                     fishingMain.runAction("Throw-FishingRod-End", player);
                     GuiseEntity guiseEntity = GuiseEntity.createGuise( Look.getLook(player, 1));
                     guiseEntity.setVisible(true);
-                    guiseEntity.appendItem16(CustomItem.valueOf("FishingTools", "buoy", 1), "HEAD");
+                    ItemStack hook = CustomItem.valueOf("FishingTools", "Buoy_Platinum_Star", 1);
+                    if(fishingMain.fishHook != null){
+                        hook = fishingMain.fishHook;
+                    }
+                    guiseEntity.appendItem16(hook, "HEAD");
                     Manager.guise_Entity_Map.put(uuidString, guiseEntity);
                     new OrbitalActionOut(uuidString, guiseEntity, guiseEntity.getLocation(), Look.getLook(player, 15).add(0,-4,0));
                 }

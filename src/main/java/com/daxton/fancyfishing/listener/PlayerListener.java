@@ -1,15 +1,17 @@
 package com.daxton.fancyfishing.listener;
 
 import com.daxton.fancycore.api.aims.entity.judgment.Range;
+import com.daxton.fancycore.api.item.ItemKeySearch;
+import com.daxton.fancyfishing.FancyFishing;
 import com.daxton.fancyfishing.fishing.action.FishingMain;
-import com.daxton.fancyfishing.fishing.menu.FishingStartStop;
 import com.daxton.fancyfishing.manager.Manager;
-import org.bukkit.block.Block;
+import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
-import org.bukkit.event.inventory.InventoryCloseEvent;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerMoveEvent;
@@ -22,12 +24,13 @@ import java.util.ArrayList;
 
 public class PlayerListener implements Listener {
 
+    public static int ii;
+
     @EventHandler//當玩家登入
     public void onPlayerJoin(PlayerJoinEvent event){
         Player player = event.getPlayer();
         String uuidString = player.getUniqueId().toString();
-        Manager.player_bag_size.put(uuidString, 18);
-        Manager.player_item.put(uuidString, new ArrayList<>());
+        Manager.player_item.put(uuidString, new ItemStack[18]);
 
         Manager.fishing_Main_Map.put(uuidString, new FishingMain(player));
     }
@@ -51,11 +54,9 @@ public class PlayerListener implements Listener {
         EquipmentSlot equipmentSlot = event.getHand();
 
         Player player = event.getPlayer();
-        ItemStack itemStack = player.getInventory().getItemInMainHand();
         String uuidString = player.getUniqueId().toString();
 
         Action action = event.getAction();
-        Block block = event.getClickedBlock();
 
         FishingMain fishingMain = Manager.fishing_Main_Map.get(uuidString);
 
@@ -69,19 +70,59 @@ public class PlayerListener implements Listener {
         }
 
     }
-
-    //關閉背包
+    //當使用背包時
     @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event){
-        Player player = (Player) event.getPlayer();
+    public void onInventoryClick(InventoryClickEvent event){
+        if(!(event.getWhoClicked() instanceof Player player)){
+            return;
+        }
+
         String uuidString = player.getUniqueId().toString();
-        if(GUI.gui_Map.get(uuidString) != null){
-            GUI gui = GUI.gui_Map.get(uuidString);
-            ItemStack itemStack = gui.getItem(1, 2);
+        InventoryAction action = event.getAction();
+        int slot = event.getSlot();
+        //FancyFishing.fancyFishing.getLogger().info(slot+" : "+action);
+
+        if(slot != 1 && action == InventoryAction.PICKUP_ALL){
+            ItemStack itemStack = player.getInventory().getItem(slot);
+            if(itemStack != null){
+                ii = slot;
+                if(GUI.gui_Map.get(uuidString) != null){
+                    GUI gui = GUI.gui_Map.get(uuidString);
+                    gui.setMove(itemCheck(itemStack), 1, 2);
+                }
+            }
 
         }
 
+        if(slot == 1){
+            ItemStack itemStack = event.getInventory().getItem(1);
+            if(itemStack != null && !itemCheck(itemStack)){
+                //FancyFishing.fancyFishing.getLogger().info(itemStack.getType().toString());
+                event.getInventory().remove(itemStack);
+                player.getInventory().setItem(ii, itemStack);
+            }
+
+        }
 
     }
+
+    //檢查是否為釣竿
+    public static boolean itemCheck(ItemStack itemStack){
+        boolean output = false;
+        if(itemStack.getType() != Material.AIR){
+//            if(itemStack.getItemMeta() != null){
+//                //String dn = itemStack.getItemMeta().getDisplayName();
+//                //FancyFishing.fancyFishing.getLogger().info(dn);
+//            }
+
+            String toolType = ItemKeySearch.getCustomAttributes(itemStack,"tooltype");
+            //FancyFishing.fancyFishing.getLogger().info(toolType);
+            if(toolType.equals("浮標")){
+                output = true;
+            }
+        }
+        return output;
+    }
+
 
 }
